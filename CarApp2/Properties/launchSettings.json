@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CarApp2": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Pawel\\source\\repos\\CarApp2\\DAOMock1\\bin\\Debug\\net8.0\\DAOMock1.dll"
+    }
+  }
+}
