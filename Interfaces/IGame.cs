@@ -16,7 +16,6 @@ namespace Interfaces
 
         int ReleaseYear { get; set; }
         double Price { get; set; }
-        int ProducerId { get; set; }
         double DiskSpace {  get; set; }
         int Rating { get; set; }
 

@@ -2,7 +2,7 @@ using CarAppWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace CarAppWeb.Controllers
+namespace GamesWebApp.Controllers
 {
     public class HomeController : Controller
     {

@@ -13,7 +13,7 @@ namespace DAOEF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // TODO: Zmienić ścieżkę
-            optionsBuilder.UseSqlite(@"Filename=D:\Studia\Projekty\Projekt Wizualne\Projekt Wizualne\DAOEF\games_producers.db");
+            optionsBuilder.UseSqlite(@"Filename=D:\Studia\Projekty\Projekt Wizualne\repo\DAOEF\games_producers.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace DAOEF
 
         public void RemoveProducer(IProducer producer)
         {
-            throw new NotImplementedException();
+            Producers.Remove(producer as BO.Producer);
         }
         
 

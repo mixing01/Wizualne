@@ -30,7 +30,7 @@ namespace GamesDesktopApp.ViewModels
             if (propertyName != nameof(HasErrors))
                 Validate();
         }
-
+        [Required]
         public GameGenre Genre
         {
             get => _game.Genre;

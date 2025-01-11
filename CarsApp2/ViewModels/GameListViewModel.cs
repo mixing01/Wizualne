@@ -54,6 +54,13 @@ namespace GamesDesktopApp.ViewModels
             }
         }
 
+        private ObservableCollection<IProducer> _producersList;
+        public ObservableCollection<IProducer> ProducersList
+        {
+            get { return _producersList; }
+            set { _producersList = value; RaisePropertyChanged(nameof(ProducersList)); }
+        }
+
         private ObservableCollection<ProducerViewModel> _producers;
         public ObservableCollection<ProducerViewModel> Producers
         {
@@ -93,12 +100,12 @@ namespace GamesDesktopApp.ViewModels
         {
             // Tworzymy obiekt typu IDAO na podstawie ścieżki z App.config
             string libraryName = ConfigurationManager.AppSettings["libraryFile"];
-            dao = BLC.BLC.GetInstance(libraryName).DAO;
+            dao = BLC.BLC.GetInstance(libraryName).Dao;
 
             //_games jest kolekcją typu GameViewModel a nie IGame, bo samochody są wyświetlane na ekran
             _games = new ObservableCollection<GameViewModel>();
             _producers = new ObservableCollection<ProducerViewModel>(); //Jak tu wywala błąd to zapewne trzeba zmienić ścieżkę w DAOEF/DAOSqlite.cs
-
+            _producersList = new ObservableCollection<IProducer>();
             foreach (var game in dao.GetAllGames())
             {
                 Games.Add(new GameViewModel(game));
@@ -107,6 +114,7 @@ namespace GamesDesktopApp.ViewModels
             foreach (var producer in dao.GetAllProducers())
             {
                 Producers.Add(new ProducerViewModel(producer));
+                ProducersList.Add(producer);
             }
 
             viewGames = (ListCollectionView)CollectionViewSource.GetDefaultView(_games);
@@ -115,12 +123,16 @@ namespace GamesDesktopApp.ViewModels
             _addNewGameCommand = new RelayCommand(param => AddNewGame(), _ => CanAddNewGame());
             _saveGameCommand = new RelayCommand(param => SaveGame(), _ => CanSaveGame());
             _filterGamesDataCommand = new RelayCommand(param => FilterGamesData());
-            _undoGamesChangesCommand = new RelayCommand(param => UndoGamesChanges(), _ => CanUndoGamesChanges());
+            _undoGamesGamesChangesCommand = new RelayCommand(param => UndoGamesChanges(), _ => CanUndoGamesChanges());
+            _deleteGameCommand = new RelayCommand(param => DeleteGame(), _ => CanDeleteGame());
+
 
             _addNewProducerCommand = new RelayCommand(param => AddNewProducer(), _ => CanAddNewProducer());
             _saveProducerCommand = new RelayCommand(param => SaveProducer(), _ => CanSaveProducer());
             _filterProducersDataCommand = new RelayCommand(param => FilterProducersData());
             _undoProducersChangesCommand = new RelayCommand(param => UndoProducersChanges(), _ => CanUndoProducersChanges());
+            _deleteProducerCommand = new RelayCommand(param => DeleteProducer(), _ => CanDeleteProducer());
+
         }
 
         private RelayCommand _addNewGameCommand;
@@ -135,6 +147,12 @@ namespace GamesDesktopApp.ViewModels
             get => _saveGameCommand;
         }
 
+        private RelayCommand _deleteGameCommand;
+        public RelayCommand DeleteGameCommand
+        {
+            get => _deleteGameCommand;
+        }
+
         private void AddNewGame()
         {
             IGame newGame = dao.CreateNewGame();
@@ -142,12 +160,15 @@ namespace GamesDesktopApp.ViewModels
             EditedGame = cvm;
             EditedGame.IsChanged = true;
             SelectedGame = null;
-
         }
 
         // Jak id == 0 to znaczy że dodajemy nowe auto do bazy. W przeciwnym razie edytujemy istniejące
         private void SaveGame()
         {
+            if (CanUndoProducersChanges())
+            {
+                UndoProducersChanges();
+            }
             if (EditedGame.HasErrors)
                 return;
             if (EditedGame.Id == 0)
@@ -161,10 +182,30 @@ namespace GamesDesktopApp.ViewModels
             EditedGame = null;
         }
 
+        private void DeleteGame()
+        {
+            GameViewModel gameToBeDeleted = EditedGame;
+            UndoGamesChanges();
+            _games.Remove(gameToBeDeleted);
+            dao.RemoveGame(gameToBeDeleted.game);
+            dao.SaveChanges();
+            Games.Clear();
+            foreach (var game in dao.GetAllGames())
+            {
+                Games.Add(new GameViewModel(game));
+            }
+        }
+
         private bool CanAddNewGame()
         {
             if ((EditedGame == null) || (!EditedGame.IsChanged)) return true;
             return false;
+        }
+
+        private bool CanDeleteGame()
+        {
+            if ((EditedGame == null) || (EditedGame.Id == 0)) return false;
+            return true;
         }
 
         private bool CanSaveGame()
@@ -216,10 +257,10 @@ namespace GamesDesktopApp.ViewModels
             }
             EditedGame = null;
         }
-        private RelayCommand _undoGamesChangesCommand;
-        public RelayCommand UndoChangesCommand
+        private RelayCommand _undoGamesGamesChangesCommand;
+        public RelayCommand UndoGamesChangesCommand
         {
-            get => _undoGamesChangesCommand;
+            get => _undoGamesGamesChangesCommand;
         }
 
         private RelayCommand _addNewProducerCommand;
@@ -232,6 +273,12 @@ namespace GamesDesktopApp.ViewModels
         public RelayCommand SaveProducerCommand
         {
             get => _saveProducerCommand;
+        }
+
+        private RelayCommand _deleteProducerCommand;
+        public RelayCommand DeleteProducerCommand
+        {
+            get => _deleteProducerCommand;
         }
 
         private void AddNewProducer()
@@ -247,19 +294,51 @@ namespace GamesDesktopApp.ViewModels
         // Jak id == 0 to znaczy że dodajemy nowe auto do bazy. W przeciwnym razie edytujemy istniejące
         private void SaveProducer()
         {
+            if (CanUndoGamesChanges())
+            {
+                UndoGamesChanges();
+            }
             if (EditedProducer.HasErrors)
                 return;
             if (EditedProducer.Id == 0)
             {
                 _producers.Add(EditedProducer);
                 // dao przyjmuje obiekty typu IGame, a SelectedGame jest typu GameViewModel. Dlatego korzystamy z właściwość(property) Game w klasie GameViewModel
-                dao.AddProducer(EditedProducer.producer);
+                dao.AddProducer(EditedProducer.Producer);
             }
             EditedProducer.IsChanged = false;
             dao.SaveChanges();
+            _producersList.Clear();
+            foreach (var producer in dao.GetAllProducers())
+            {
+                _producersList.Add(producer);
+            }
+
             EditedProducer = null;
         }
 
+        private void DeleteProducer()
+        {
+            ProducerViewModel producerToBeDeleted = EditedProducer;
+            UndoProducersChanges();
+            _producers.Remove(producerToBeDeleted);
+            _producersList.Remove(producerToBeDeleted.Producer);
+            dao.RemoveProducer(producerToBeDeleted.Producer);
+            dao.SaveChanges();
+            Producers.Clear();
+            ProducersList.Clear();
+            foreach (var producer in dao.GetAllProducers())
+            {
+                Producers.Add(new ProducerViewModel(producer));
+                ProducersList.Add(producer);
+            }
+        }
+
+        private bool CanDeleteProducer()
+        {
+            if ((EditedProducer == null) || (EditedProducer.Id == 0)) return false;
+            return true;
+        }
         private bool CanAddNewProducer()
         {
             if ((EditedProducer == null) || (!EditedProducer.IsChanged)) return true;
@@ -312,6 +391,7 @@ namespace GamesDesktopApp.ViewModels
                 IProducer producer = dao.GetAllProducers().First(p => p.Id == EditedProducer.Id);
                 int index = Producers.IndexOf(EditedProducer);
                 Producers[index] = new ProducerViewModel(producer);
+
             }
             EditedProducer = null;
         }

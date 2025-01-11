@@ -8,12 +8,14 @@ namespace Interfaces
 {
     public enum GameGenre
     {
+        Action,
         Adventure,
         Combat,
         FPS,
         Horror,
         Indie,
         MOBA,
+        Platform,
         Puzzle,
         Roguelike,
         RPG,

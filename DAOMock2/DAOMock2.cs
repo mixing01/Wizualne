@@ -4,85 +4,73 @@ namespace DAOMock2
 {
     public class DAOMock2 : IDAO
     {
+
         private List<IProducer> _producers;
 
-        private List<IGame> _cars;
+        private List<IGame> _games;
 
         public DAOMock2()
         {
             _producers = new List<IProducer>()
             {
-                new Producer() { Id = 1, Name="KIA"},
-                new Producer() { Id = 2, Name="BMW"},
+                new Producer() { Id = 1, Name="Capcom", Continent = Continent.AS, EstYear = 1979},
+                new Producer() { Id = 2, Name="Electronic Arts", Continent = Continent.NA, EstYear = 1982},
             };
 
-            _cars = new List<IGame>()
+            _games = new List<IGame>()
             {
-                new Car() { Id = 1, Producer = _producers[0], Name="Ceed", Genre=GameGenre.Automatic },
-                new Car() { Id = 2, Producer = _producers[0], Name="Rio", Genre=GameGenre.Manual},
-                new Car() { Id = 3, Producer = _producers[0], Name="Sportage", Genre=GameGenre.Manual },
-                new Car() { Id = 4, Producer = _producers[1], Name="5", Genre=GameGenre.Automatic },
+                new Game() { Id = 1, Producer = _producers[0], Name="Street Fighter II", Genre=GameGenre.Combat, DiskSpace = 4, Price = 1.99, Rating = 9, ReleaseYear = 1991},
+                new Game() { Id = 2, Producer = _producers[0], Name="Devil May Cry", Genre=GameGenre.Action, DiskSpace = 9, Price = 17, Rating = 7, ReleaseYear = 2007},
+                new Game() { Id = 3, Producer = _producers[1], Name="FIFA 23", Genre=GameGenre.Sports, DiskSpace = 100, Price = 59.99, Rating = 8, ReleaseYear = 2022},
+                new Game() { Id = 4, Producer = _producers[1], Name="Dead Space", Genre=GameGenre.Horror, DiskSpace = 12.5, Price = 5.99, Rating = 7, ReleaseYear = 2008},
             };
         }
 
-        public void AddCar(IGame car)
+        public IGame CreateNewGame()
         {
-            throw new NotImplementedException();
+            return new Game();
         }
-
-        public void AddProducer(IProducer producer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IGame CreateNewCar()
-        {
-            throw new NotImplementedException();
-        }
-
         public IProducer CreateNewProducer()
         {
-            throw new NotImplementedException();
+            return new Producer();
         }
-
-        public IEnumerable<IGame> GetAllCars()
+        public void AddGame(IGame game)
         {
-            return _cars;
+            Game g = game as Game;
+            g.Id = _games.Count() + 1;
+            _games.Add(g);
         }
-
+        public void AddProducer(IProducer producer)
+        {
+            Producer p = producer as Producer;
+            _producers.Add(p);
+        }
+        public void RemoveGame(IGame game)
+        {
+            _games.Remove(game);
+        }
+        public void RemoveProducer(IProducer producer)
+        {
+            _producers.Remove(producer);
+        }
         public IEnumerable<IProducer> GetAllProducers()
         {
             return _producers;
         }
-
-        public void RemoveCar(IGame car)
+        public IEnumerable<IGame> GetAllGames()
+        {
+            return _games;
+        }
+        public void UpdateGame(IGame game)
         {
             throw new NotImplementedException();
         }
-
-        public void RemoveProducer(IProducer producer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UndoChanges()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateCar(IGame car)
-        {
-            throw new NotImplementedException();
-        }
-
         public void UpdateProducer(IProducer producer)
         {
             throw new NotImplementedException();
         }
+        public void SaveChanges() { }
+
+        public void UndoChanges() { }
     }
 }

@@ -8,10 +8,10 @@ namespace BLC
     {
         // Klasa jest singletonem(tylko jedna instancja)
         private static BLC _instance;
-        private static readonly object _lock = new object();
+        private static readonly object Lock = new object();
 
         private IDAO _dao;
-        public IDAO DAO => _dao;
+        public IDAO Dao => _dao;
 
         public BLC(IConfiguration configuration)
         {
@@ -45,7 +45,7 @@ namespace BLC
         // lock jest po to żeby w kilku miejscach na raz nikt nie utworzył instancji
         public static BLC GetInstance(string libraryName)
         {
-            lock (_lock)
+            lock (Lock)
             {
                 if (_instance == null)
                 {

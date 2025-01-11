@@ -16,7 +16,7 @@ namespace GamesDesktopApp.ViewModels
 
         // _producer jest obiektem który przechowuje dane, które są udostępniane na zewnątrz za pomocą własności(property)
         private IProducer _producer;
-        public IProducer producer => _producer;
+        public IProducer Producer => _producer;
 
         public ProducerViewModel(IProducer producer)
         {

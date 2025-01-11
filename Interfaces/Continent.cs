@@ -8,11 +8,11 @@ namespace Interfaces
 {
     public enum Continent
     {
+        AF,
+        AS,
         EU,
         NA,
-        SA,
-        AF,
         OC,
-        AS
+        SA
     }
 }
