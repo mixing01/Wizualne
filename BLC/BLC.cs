@@ -25,10 +25,7 @@ namespace BLC
 
         private void CreateDao(string libraryName)
         {
-            // Wczytujemy podaną bibliotekę dll
-            Assembly assembly = Assembly.UnsafeLoadFrom(libraryName); // Jak tu wywala błąd to zapewne trzeba zmienić App.config w CarApp2 lub CarsApp2 lub appsettings.json w CarAppWeb
-
-            // Szukamy obiektu implementującego interface IDAO
+            Assembly assembly = Assembly.UnsafeLoadFrom(libraryName);
             Type typeToCreate = null;
             foreach (Type t in assembly.GetTypes())
             {
@@ -38,11 +35,8 @@ namespace BLC
                     break;
                 }
             }
-
             _dao = Activator.CreateInstance(typeToCreate) as IDAO;
         }
-        // Jeżeli istnieje już instacja BLC to ją zwracamy, jak nie to tworzymy nową
-        // lock jest po to żeby w kilku miejscach na raz nikt nie utworzył instancji
         public static BLC GetInstance(string libraryName)
         {
             lock (Lock)

@@ -1,4 +1,4 @@
-using DAOEF;
+using System.Globalization;
 
 namespace GamesWeb
 {
@@ -10,9 +10,12 @@ namespace GamesWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<DAOEF.DAOSqlite>();
+            builder.Services.AddSingleton<BLC.BLC>();
 
             var app = builder.Build();
+            var cultureInfo = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -31,7 +34,7 @@ namespace GamesWeb
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}");
 
             app.Run();
         }

@@ -12,7 +12,7 @@ namespace CarApp2
             string libraryName = ConfigurationManager.AppSettings["libraryFile"];
 
 
-            IDAO dao = BLC.BLC.GetInstance(libraryName).DAO;
+            IDAO dao = BLC.BLC.GetInstance(libraryName).Dao;
 
             // Wypisanie bazy danych na konsolę
             Console.WriteLine("** PRODUCERS ** \n");

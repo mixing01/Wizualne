@@ -12,7 +12,6 @@ namespace DAOEF
         // Połączenie z bazą danych
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // TODO: Zmienić ścieżkę
             optionsBuilder.UseSqlite(@"Filename=D:\Studia\Projekty\Projekt Wizualne\repo\DAOEF\games_producers.db");
         }
 

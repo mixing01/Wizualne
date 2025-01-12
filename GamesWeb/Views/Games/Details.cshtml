@@ -1,4 +1,4 @@
-﻿@model DAOEF.BO.Game
+﻿@model Interfaces.IGame
 
 @{
     ViewData["Title"] = "Details";
@@ -23,7 +23,7 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReleaseYear)
+            Release Year
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ReleaseYear)
@@ -41,7 +41,7 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DiskSpace)
+            Disk Space
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DiskSpace)

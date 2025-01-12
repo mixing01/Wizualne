@@ -18,7 +18,6 @@ namespace Interfaces
         double Price { get; set; }
         double DiskSpace {  get; set; }
         int Rating { get; set; }
-
         GameGenre Genre {  get; set; }
     }
 }
